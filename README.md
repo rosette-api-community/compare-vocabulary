@@ -7,15 +7,15 @@ This repository includes Python examples that leverage the [`/morphology/lemmas`
 
 ## [Jupyter Notebook]((http://nbviewer.jupyter.org/github/zyocum/compare-vocabulary/blob/master/visualize.ipynb))
 
-The simplest way to get started is to access the Jupyter notebook online [**here**](http://nbviewer.jupyter.org/github/zyocum/compare-vocabulary/blob/master/visualize.ipynb).  You can also run the notebook locally (after following the setup instructions below) by running:
+The simplest way to get started is to access the Jupyter notebook online [**here**](http://nbviewer.jupyter.org/github/zyocum/compare-vocabulary/blob/master/visualize.ipynb).  You can also run the notebook locally (after following [the setup instructions below](https://github.com/zyocum/compare-vocabulary/blob/master/README.md#setup)) by running:
 
 	(compare-vocabulary) $ jupyter notebook visualize.ipynb
 
-You can add to/replace the data directories of plain-text files in the `data` directory.  (Some corpora of poems by several famous poets are provided as examples.)
+You can add to/replace the data directories of plain-text files in the [`data`](https://github.com/zyocum/compare-vocabulary/tree/master/data) directory.  (Some corpora of poems by several famous poets are provided as examples.)
 
 ## Setup
 
-This repository is written for Python 3.6.3 or later.  First it is recommended that you set up a virtual environment.  In this directory run:
+This repository is written for Python 3.6.3 or later.  It is recommended that you set up a virtual environment first.  In this directory run:
 
     $ python3 $(which virtualenv) .
 
