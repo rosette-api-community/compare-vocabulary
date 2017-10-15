@@ -12,13 +12,13 @@ from compare_vocabulary import fdist, DEFAULT_ROSETTE_API_URL
 from rosette.api import API
 from scipy.interpolate import interp1d
 
-Pos = namedtuple('Pos', ['short', 'long'])
+Pos = namedtuple('Pos', ['tag', 'name'])
 Color = namedtuple('Color', ['hex', 'name'])
 
 COLOR = {
     Pos('ADJ', 'Adjective'): Color('#4E8975', 'seagreen'),
     Pos('ADP', 'Adposition'): Color('#A52A2A', 'brown'),
-    Pos('ADV', 'Adverb'): Color('#00FF00', 'lime'),
+    Pos('ADV', 'Adverb'): Color('#32CD32', 'limegreen'),
     Pos('AUX', 'Auxiliary verb'): Color('#0000FF', 'blue'),
     Pos('CONJ', 'Coordinating conjunction'): Color('#ff4500', 'orangered'),
     Pos('DET', 'Determiner'): Color('#c0c0c0', 'silver'),
@@ -29,7 +29,7 @@ COLOR = {
     Pos('PRON', 'Pronoun'): Color('#FF0000', 'red'),
     Pos('PROPN', 'Proper noun'): Color('#8D38C9', 'violet'),
     Pos('PUNCT', 'Punctuation'): Color('#008080', 'teal'),
-    Pos('SCONJ', 'Subordinating conjunction'): Color('#EDDA74', 'goldenron'),
+    Pos('SCONJ', 'Subordinating conjunction'): Color('#EDDA74', 'goldenrod'),
     Pos('SYM', 'Symbol'): Color('#808000', 'olive'),
     Pos('VERB', 'Verb'): Color('#800080', 'purple'),
     Pos('X', 'Other'): Color('#000000', 'black'),
@@ -38,19 +38,36 @@ COLOR = {
 def color_key():
     """Generate a POS:color key as HTML"""
     html = '<h2>Color Key</h2>'
-    html += '<ul>'
+    html += '''
+    <table cellpadding="3" style="border-collapse:collapse">
+    <tr>
+        <th style="border: 1px solid; text-align: left">Tag</th>
+        <th style="border: 1px solid; text-align: left">Name</th>
+        <th style="border: 1px solid; text-align: left">Color</th>
+    </tr>
+    '''
     html += '\n'.join(
-        f'<li><font color="{color.hex}">{pos.short}:{pos.long}</font></li>'
-        for pos, color in COLOR.items()
+        f'''<tr style="border: 1px solid">
+        <td style="border: 1px solid">
+            <font color="{color.hex}">{pos.tag}</font>
+        </td>
+        <td style="border: 1px solid">
+            <font color="{color.hex}">{pos.name}</font>
+        </td>
+        <td style="border: 1px solid">
+            <font color="{color.hex}">{color.name}</font>
+        </td>
+        </tr>
+        ''' for pos, color in COLOR.items()
     )
-    html += '</ul>'
+    html += '</table>'
     return html
 
 def visualize(fd, pos_tags=None):
     """Visualize a frequency distribution (fd) as a word-cloud in HTML"""
     if pos_tags is not None:
         fd = {t: f for t, f in fd.items() if t.pos in pos_tags}
-    color = {pos.short: color.hex for pos, color in COLOR.items()}
+    color = {pos.tag: color.hex for pos, color in COLOR.items()}
     frequencies = sorted(fd.values())
     resize = interp1d((min(frequencies), max(frequencies)), (1, 100))
     size = dict(zip(frequencies, resize(frequencies)))
@@ -86,7 +103,7 @@ if __name__ == '__main__':
         '-t', '--pos-tags',
         default=None,
         metavar='POS',
-        choices=sorted(pos.short for pos in COLOR),
+        choices=sorted(pos.tag for pos in COLOR),
         nargs='+',
         help='a white-list of part-of-speech (POS) tags to include'
     )
