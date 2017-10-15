@@ -66,7 +66,7 @@ def request(content, endpoint, api, language=None, uri=False, **kwargs):
         adm = methodcaller(endpoint, parameters, **kwargs)(api)
         return adm
     except RosetteException as e:
-        print(f'[{e.__name__}]: {e}', file=sys.stderr)
+        print(f'[{e.status}]: {e.message}', file=sys.stderr)
 
 def load(filename):
     """Load text from a file"""
