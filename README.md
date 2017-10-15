@@ -140,6 +140,10 @@ This is a Python script with a command-line driver for producing an HTML visuali
     (compare-vocabulary) $ ./visualize.py data/{carroll,shakespeare} -n 100 -t ADJ ADV > carroll_vs_shakespeare.html
     
 
+{::nomarkdown}
+
+<!-- HTML CODE-->
+
 <html>
  <head>
  </head>
@@ -2630,3 +2634,5 @@ This is a Python script with a command-line driver for producing an HTML visuali
   </h1>
  </body>
 </html>
+
+{:/}
