@@ -119,12 +119,10 @@ def compare_intersection(*fds):
     fds : a collection of frequency distributions
           (dicts mapping Lemma -> int; see fdist())
     """
-    # Use the first frequency distribution as a key for sorting purposes
-    key_fd, *_ = fds
     # Restrict the vocabulary to the intersection of all frequency distributions
     vocabulary = sorted(
         set.intersection(*(set(fd) for fd in fds)),
-        key=key_fd.get,
+        key=lambda term: (fd.get(term) for fd in fds),
         reverse=True
     )
     for term in vocabulary:
