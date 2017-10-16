@@ -2,7 +2,7 @@
 
 This repository includes Python examples that leverage the [`/morphology/lemmas` endpoint of Rosette API](https://developer.rosette.com/features-and-functions#morphological-analysis-lemmas) for:
 
-* Comparing vocabulary of vocabulary terms in different sets of documents
+* Comparing vocabulary terms in different sets of documents
 * Visualizing frequency distributions of vocabulary terms and their parts-of-speech
 
 ## [Jupyter Notebook]((http://nbviewer.jupyter.org/github/zyocum/compare-vocabulary/blob/master/visualize.ipynb))
@@ -59,7 +59,13 @@ This is a Python script with a command-line driver for producing a tabular compa
                             Alternative Rosette API URL (default:
                             https://api.rosette.com/rest/v1/)
 
-    (compare-vocabulary) $ ./compare_vocabulary.py data/{carroll,shakespeare} -n 50 | column -t
+For example, to write out tabular comparison data to file as TSV:
+
+    (compare-vocabulary) $ ./compare_vocabulary.py data/{carroll,shakespeare} -n 50 > carroll_vs_shakespeare.tsv
+
+And to quickly reformat the the TSV file contents in a more human-readable format:
+
+    (compare-vocabulary) $ column -t < carroll_vs_shakespeare.tsv
     data/carroll:lemma  data/carroll:pos  data/carroll:frequency  data/shakespeare:lemma  data/shakespeare:pos  data/shakespeare:frequency
     ,                   PUNCT             110                     ,                       PUNCT                 69
     the                 DET               89                      and                     CONJ                  31
@@ -136,6 +142,8 @@ This is a Python script with a command-line driver for producing an HTML visuali
       -a API_URL, --api-url API_URL
                             Alternative Rosette API URL (default:
                             https://api.rosette.com/rest/v1/)
-
+    # write out frequency distribution visualization HTML to file
     (compare-vocabulary) $ ./visualize.py data/{carroll,shakespeare} -n 100 -t ADJ ADV > carroll_vs_shakespeare.html
-    
+
+You could then view the HTML file `carroll_vs_shakespeare.html` in your browser of choice.
+
