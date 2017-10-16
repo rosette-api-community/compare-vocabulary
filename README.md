@@ -11,7 +11,7 @@ The simplest way to get started is to access the Jupyter notebook online [**here
 
 	(compare-vocabulary) $ jupyter notebook visualize.ipynb
 
-You can add to/replace the data directories of plain-text files in the [`data`](https://github.com/zyocum/compare-vocabulary/tree/master/data) directory.  (Some corpora of poems by several famous poets are provided as examples.)
+Some corpora of poems by several famous poets are provided as examples in [`data`](https://github.com/zyocum/compare-vocabulary/tree/master/data).  If you'd like to analyze your own data, you can add to/replace those subdirectories with directories of your own plain-text files.
 
 ## Setup
 
