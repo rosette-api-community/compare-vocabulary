@@ -4,6 +4,7 @@
 
 import csv
 import fnmatch
+import json
 import os
 import re
 import sys
@@ -15,9 +16,14 @@ from operator import methodcaller, itemgetter
 from rosette.api import API, DocumentParameters, RosetteException
 
 DEFAULT_ROSETTE_API_URL = 'https://api.rosette.com/rest/v1/'
-
+STOPWORDS_FILE = 'stopwords.json'
 # This namedtuple is just a convenient data reprsentation for vocabulary terms
 Lemma = namedtuple('Lemma', ['lemma', 'pos'])
+
+def load_stopwords(filename):
+    """Load stopwords lists from JSON file"""
+    with open(filename, mode='r') as f:
+        return  json.loads(f.read())
 
 def find_files(directory='.', pattern='*', recursive=True):
     """Find files in the current directory that match the given pattern"""
@@ -87,7 +93,7 @@ def lemmas(directory, api):
                 first, *rest = lemma['analyses']
                 yield Lemma(first['lemma'], first['partOfSpeech'])
 
-def fdist(directory, api, n):
+def fdist(directory, api, n, stopwords):
     """Get the top n most frequent lemmas as a lemma/POS:frequency distribution 
     for the vocabulary of the text in a directory
     
@@ -96,7 +102,12 @@ def fdist(directory, api, n):
             n : an integer specifying that the frequency distribution includes 
                 ony the top n most frequent terms (if n is None all vocabulary 
                 terms are included)"""
-    return dict(Counter(lemmas(directory, api)).most_common(n))
+    return dict(
+        Counter((
+            term for term in lemmas(directory, api)
+            if term.lemma.lower() not in set(stopwords or [])
+        )).most_common(n)
+    )
 
 def compare_all(*fds):
     """A comparator that includes the union of the vocabularies from the given
@@ -133,7 +144,7 @@ COMPARISONS = {
     'intersection': compare_intersection
 }
 
-def main(directories, api, comparison, n):
+def main(directories, api, comparison, n, stopwords):
     """Create frequency distributions from the vocabularies of each directory
     and write out a tabular representatin to stdout
     
@@ -143,7 +154,7 @@ def main(directories, api, comparison, n):
               n : an integer specifying that the frequency distribution includes
                   ony the top n most frequent terms (if n is None all vocabulary
                   terms are included)"""
-    fds = (fdist(directory, api, n) for directory in directories)
+    fds = (fdist(directory, api, n, stopwords) for directory in directories)
     writer = csv.writer(sys.stdout, delimiter='\t')
     header = chain(
         *((f'{d}:lemma', f'{d}:pos', f'{d}:frequency') for d in directories)
@@ -152,6 +163,7 @@ def main(directories, api, comparison, n):
     writer.writerows(comparison(*fds))
 
 if __name__ == '__main__':
+    stopwords = load_stopwords(STOPWORDS_FILE)
     import argparse
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -177,6 +189,12 @@ if __name__ == '__main__':
         type=int,
         default=None,
         help='how many lexical items to compare'
+    )
+    parser.add_argument(
+        '-l', '--language',
+        default=None,
+        choices=sorted(stopwords.keys()),
+        help='ISO 639-2/T three-letter language code (this indicates which stopwordlist to use)'
     )
     parser.add_argument(
         '-k', '--key',

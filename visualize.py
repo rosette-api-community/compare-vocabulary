@@ -10,7 +10,6 @@ from collections import namedtuple
 from bs4 import BeautifulSoup
 from compare_vocabulary import fdist, DEFAULT_ROSETTE_API_URL
 from rosette.api import API
-from scipy.interpolate import interp1d
 
 Pos = namedtuple('Pos', ['tag', 'name'])
 Color = namedtuple('Color', ['hex', 'name'])
@@ -63,14 +62,24 @@ def color_key():
     html += '</table>'
     return html
 
+def rescale(range1, range2):
+    """Return a function that resizes values from range1 to values in range2
+    
+    This is useful for interpolating values from one range to another
+    """
+    min1, max1, min2, max2 = min(range1), max(range1), min(range2), max(range2)
+    def resize(value):
+        return (((value - min1) * (max2 - min2)) / (max1 - min1)) + min2
+    return resize
+
 def visualize(fd, pos_tags=None):
-    """Visualize a frequency distribution (fd) as a word-cloud in HTML"""
+    """Visualize a frequency distribution (fd) as a 'word-cloud' in HTML"""
     if pos_tags is not None:
         fd = {t: f for t, f in fd.items() if t.pos in pos_tags}
     color = {pos.tag: color.hex for pos, color in COLOR.items()}
     frequencies = sorted(fd.values())
-    resize = interp1d((min(frequencies), max(frequencies)), (1, 100))
-    size = dict(zip(frequencies, resize(frequencies)))
+    resize = rescale(frequencies, range(1, 25))
+    size = dict(zip(frequencies, (resize(v) for v in frequencies)))
     html = '\n'.join(
         f'''<font
             color="{color[t.pos]}"
