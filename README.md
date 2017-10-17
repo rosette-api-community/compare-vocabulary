@@ -36,28 +36,32 @@ This is a Python script with a command-line driver for producing a tabular compa
 ### Usage
 
     (compare-vocabulary) $ ./compare_vocabulary.py -h
-    usage: compare_vocabulary.py [-h] [-c {all,intersection}] [-n TOP_N] [-k KEY]
-                                 [-a API_URL]
-                                 directories [directories ...]
-
-    Compare vocabularies from directories of text files
-
-    positional arguments:
-      directories           a list of directories of text files
-
-    optional arguments:
-      -h, --help            show this help message and exit
-      -c {all,intersection}, --comparison {all,intersection}
-                            select whether to compare all vocabulary terms (all)
-                            or count only the frequencies of terms that occur at
-                            least once in each directory (intersection) (default:
-                            all)
-      -n TOP_N, --top-n TOP_N
-                            how many lexical items to compare (default: None)
-      -k KEY, --key KEY     Rosette API Key (default: None)
-      -a API_URL, --api-url API_URL
-                            Alternative Rosette API URL (default:
-                            https://api.rosette.com/rest/v1/)
+	usage: compare_vocabulary.py [-h] [-c {all,intersection}] [-n TOP_N]
+	                             [-l {ara,bul,cat,ces,dan,deu,ell,eng,eus,fas,fin,fra,gle,glg,hin,hun,hye,ind,ita,jpn,kor,kur,lat,lav,lit,mar,nld,nno,pol,por,ron,rus,slk,slv,spa,swe,tha,tur,urd,zho}]
+	                             [-k KEY] [-a API_URL]
+	                             directories [directories ...]
+	
+	Compare vocabularies from directories of text files
+	
+	positional arguments:
+	  directories           a list of directories of text files
+	
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  -c {all,intersection}, --comparison {all,intersection}
+	                        select whether to compare all vocabulary terms (all)
+	                        or count only the frequencies of terms that occur at
+	                        least once in each directory (intersection) (default:
+	                        all)
+	  -n TOP_N, --top-n TOP_N
+	                        how many lexical items to compare (default: None)
+	  -l {ara,bul,cat,ces,dan,deu,ell,eng,eus,fas,fin,fra,gle,glg,hin,hun,hye,ind,ita,jpn,kor,kur,lat,lav,lit,mar,nld,nno,pol,por,ron,rus,slk,slv,spa,swe,tha,tur,urd,zho}, --language {ara,bul,cat,ces,dan,deu,ell,eng,eus,fas,fin,fra,gle,glg,hin,hun,hye,ind,ita,jpn,kor,kur,lat,lav,lit,mar,nld,nno,pol,por,ron,rus,slk,slv,spa,swe,tha,tur,urd,zho}
+	                        ISO 639-2/T three-letter language code (this indicates
+	                        which stopwordlist to use) (default: None)
+	  -k KEY, --key KEY     Rosette API Key (default: None)
+	  -a API_URL, --api-url API_URL
+	                        Alternative Rosette API URL (default:
+	                        https://api.rosette.com/rest/v1/)
 
 For example, to write out tabular comparison data to file as TSV:
 
@@ -122,8 +126,10 @@ And to quickly reformat the the TSV file contents in a more human-readable forma
 
 This is a Python script with a command-line driver for producing an HTML visualization of lemma/parts-of-speech term frequencies across different corpora.  In the visualization lemmas are color-coded according to their part-of-speech (POS) tag and their size is scaled relative to their frequency.
 
-    (compare-vocabulary) $ ./visualize.py -h 2>/dev/null
-    usage: visualize.py [-h] [-n TOP_N] [-t POS [POS ...]] [-k KEY] [-a API_URL]
+    (compare-vocabulary) $ ./visualize.py -h
+    usage: visualize.py [-h] [-n TOP_N]
+                        [-l {ara,bul,cat,ces,dan,deu,ell,eng,eus,fas,fin,fra,gle,glg,hin,hun,hye,ind,ita,jpn,kor,kur,lat,lav,lit,mar,nld,nno,pol,por,ron,rus,slk,slv,spa,swe,tha,tur,urd,zho}]
+                        [-t POS [POS ...]] [-k KEY] [-a API_URL]
                         directories [directories ...]
 
     Visualize term frequency distributions via Rosette API analyses
@@ -135,6 +141,9 @@ This is a Python script with a command-line driver for producing an HTML visuali
       -h, --help            show this help message and exit
       -n TOP_N, --top-n TOP_N
                             how many lexical items to compare (default: None)
+      -l {ara,bul,cat,ces,dan,deu,ell,eng,eus,fas,fin,fra,gle,glg,hin,hun,hye,ind,ita,jpn,kor,kur,lat,lav,lit,mar,nld,nno,pol,por,ron,rus,slk,slv,spa,swe,tha,tur,urd,zho}, --language {ara,bul,cat,ces,dan,deu,ell,eng,eus,fas,fin,fra,gle,glg,hin,hun,hye,ind,ita,jpn,kor,kur,lat,lav,lit,mar,nld,nno,pol,por,ron,rus,slk,slv,spa,swe,tha,tur,urd,zho}
+                            ISO 639-2/T three-letter language code (this indicates
+                            which stopwordlist to use) (default: None)
       -t POS [POS ...], --pos-tags POS [POS ...]
                             a white-list of part-of-speech (POS) tags to include
                             (default: None)
@@ -142,7 +151,6 @@ This is a Python script with a command-line driver for producing an HTML visuali
       -a API_URL, --api-url API_URL
                             Alternative Rosette API URL (default:
                             https://api.rosette.com/rest/v1/)
-    # write out frequency distribution visualization HTML to file
     (compare-vocabulary) $ ./visualize.py data/{carroll,shakespeare} -n 100 -t ADJ ADV > carroll_vs_shakespeare.html
 
 You could then view the HTML file `carroll_vs_shakespeare.html` in your browser of choice.

@@ -8,7 +8,8 @@ from getpass import getpass
 from collections import namedtuple
 
 from bs4 import BeautifulSoup
-from compare_vocabulary import fdist, DEFAULT_ROSETTE_API_URL
+from compare_vocabulary import fdist, load_stopwords, \
+                               STOPWORDS_FILE, DEFAULT_ROSETTE_API_URL
 from rosette.api import API
 
 Pos = namedtuple('Pos', ['tag', 'name'])
@@ -93,6 +94,7 @@ def visualize(fd, pos_tags=None):
 
 if __name__ == '__main__':
     import argparse
+    stopwords = load_stopwords(STOPWORDS_FILE)
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         description=__doc__
@@ -107,6 +109,15 @@ if __name__ == '__main__':
         type=int,
         default=None,
         help='how many lexical items to compare'
+    )
+    parser.add_argument(
+        '-l', '--language',
+        default=None,
+        choices=sorted(stopwords.keys()),
+        help=(
+            'ISO 639-2/T three-letter language code (this indicates which '
+            'stopword list to use)'
+        )
     )
     parser.add_argument(
         '-t', '--pos-tags',
@@ -142,7 +153,7 @@ if __name__ == '__main__':
     for directory in args.directories:
         html += f'<h1>{directory}<h1>'
         html += visualize(
-            fdist(directory, api, args.top_n),
+            fdist(directory, api, args.top_n, stopwords.get(args.language, [])),
             pos_tags=args.pos_tags
         )
     
