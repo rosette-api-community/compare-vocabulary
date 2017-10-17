@@ -194,7 +194,10 @@ if __name__ == '__main__':
         '-l', '--language',
         default=None,
         choices=sorted(stopwords.keys()),
-        help='ISO 639-2/T three-letter language code (this indicates which stopwordlist to use)'
+        help=(
+            'ISO 639-2/T three-letter language code (this indicates which '
+            'stopword list to use)'
+        )
     )
     parser.add_argument(
         '-k', '--key',
@@ -217,4 +220,10 @@ if __name__ == '__main__':
     api = API(user_key=key, service_url=args.api_url)
     api.setUrlParameter('output', 'rosette')
     comparator = COMPARISONS[args.comparison]
-    main(args.directories, api, comparator, args.top_n)
+    main(
+        args.directories,
+        api,
+        comparator,
+        args.top_n,
+        stopwords.get(args.language, [])
+    )
