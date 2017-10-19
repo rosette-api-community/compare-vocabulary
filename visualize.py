@@ -4,8 +4,9 @@
 
 import os
 
-from getpass import getpass
 from collections import namedtuple
+from getpass import getpass
+from math import log
 
 from bs4 import BeautifulSoup
 from compare_vocabulary import fdist, load_stopwords, \
@@ -79,13 +80,12 @@ def visualize(fd, pos_tags=None):
         fd = {t: f for t, f in fd.items() if t.pos in pos_tags}
     color = {pos.tag: color.hex for pos, color in COLOR.items()}
     frequencies = sorted(fd.values())
-    resize = rescale(frequencies, range(1, 25))
-    size = dict(zip(frequencies, (resize(v) for v in frequencies)))
+    font_size = rescale(frequencies, range(75, 351))
     html = '\n'.join(
         f'''<font
             color="{color[t.pos]}"
-            size={size[f]}
             title="{t.lemma}/{t.pos} ({f})"
+            style="font-size: {font_size(f)}%"
         >
         {t.lemma}
         </font>''' for t, f in fd.items()
