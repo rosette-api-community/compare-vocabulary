@@ -146,7 +146,7 @@ if __name__ == '__main__':
     )
     # Instantiate the Rosette API
     api = API(user_key=key, service_url=args.api_url)
-    api.setUrlParameter('output', 'rosette')
+    api.set_url_parameter('output', 'rosette')
     
     html = color_key()
     
