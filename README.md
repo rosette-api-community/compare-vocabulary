@@ -5,13 +5,13 @@ This repository includes Python examples that leverage the [`/morphology/lemmas`
 * Comparing vocabulary terms in different sets of documents
 * Visualizing frequency distributions of vocabulary terms and their parts-of-speech
 
-## [Jupyter Notebook]((http://nbviewer.jupyter.org/github/zyocum/compare-vocabulary/blob/master/visualize.ipynb))
+## [Jupyter Notebook]((http://nbviewer.jupyter.org/github/rosette-api-community/compare-vocabulary/blob/master/visualize.ipynb))
 
-The simplest way to get started is to access the Jupyter notebook online [**here**](http://nbviewer.jupyter.org/github/zyocum/compare-vocabulary/blob/master/visualize.ipynb).  You can also run the notebook locally (after following [the setup instructions below](https://github.com/zyocum/compare-vocabulary/blob/master/README.md#setup)) by running:
+The simplest way to get started is to access the Jupyter notebook online [**here**](http://nbviewer.jupyter.org/github/rosette-api-community/compare-vocabulary/blob/master/visualize.ipynb).  You can also run the notebook locally (after following [the setup instructions below](https://github.com/rosette-api-community/compare-vocabulary/blob/master/README.md#setup)) by running:
 
 	(compare-vocabulary) $ jupyter notebook visualize.ipynb
 
-Some corpora of poems by several famous poets are provided as examples in [`data`](https://github.com/zyocum/compare-vocabulary/tree/master/data).  If you'd like to analyze your own data, you can add to/replace those subdirectories with directories of your own plain-text files.
+Some corpora of poems by several famous poets are provided as examples in [`data`](https://github.com/rosette-api-community/compare-vocabulary/tree/master/data).  If you'd like to analyze your own data, you can add to/replace those subdirectories with directories of your own plain-text files.
 
 ## Setup
 
