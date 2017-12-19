@@ -16,7 +16,7 @@ from operator import methodcaller, itemgetter
 from rosette.api import API, DocumentParameters, RosetteException
 
 DEFAULT_ROSETTE_API_URL = 'https://api.rosette.com/rest/v1/'
-STOPWORDS_FILE = 'stopwords.json'
+STOPWORDS_FILE = os.path.join(os.path.dirname(__file__), 'stopwords.json')
 # This namedtuple is just a convenient data reprsentation for vocabulary terms
 Lemma = namedtuple('Lemma', ['lemma', 'pos'])
 
@@ -133,15 +133,49 @@ def compare_intersection(*fds):
     # Restrict the vocabulary to the intersection of all frequency distributions
     vocabulary = sorted(
         set.intersection(*(set(fd) for fd in fds)),
-        key=lambda term: (fd.get(term) for fd in fds),
+        key=lambda term: tuple(fd.get(term) for fd in fds),
         reverse=True
     )
     for term in vocabulary:
         yield chain(*((term.lemma, term.pos, fd[term]) for fd in fds))
 
+def compare_disjunction(*fds):
+    """A comparator that includes only the disjunction of the vocabularies
+    from the given frequency distributions
+    
+    fds: a collection of frequency distributions
+        (dicts mapping Lemma -> int; see fdist())
+    """
+    # Restrict the vocabulary to those terms that occur in each fd individually,
+    # but do not occur in the intersection of all fds
+    intersection = set.intersection(*(set(fd) for fd in fds))
+    yield from compare_all(*(
+        {term: fd[term] for term in set(fd).difference(intersection)}
+        for fd in fds
+    ))
+
+def compare_unique(*fds):
+    """A comparator that includes only terms that are unique to a particular
+    corpus
+    
+    fds: a collection of frequency distributions
+        (dicts mapping Lemma -> int; see fdist())
+    """
+    indices = range(len(fds))
+    for i, fd in enumerate(fds):
+        rest_vocabulary = set.union(*(
+            set(fds[j]) for j in indices if j != i
+        ))
+        for term in set(fd):
+            if term in rest_vocabulary:
+                fd.pop(term)
+    yield from compare_all(*(fds))
+
 COMPARISONS = {
     'all': compare_all,
-    'intersection': compare_intersection
+    'intersection': compare_intersection,
+    'disjunction': compare_disjunction,
+    'unique': compare_unique
 }
 
 def main(directories, api, comparison, n, stopwords):
@@ -154,7 +188,7 @@ def main(directories, api, comparison, n, stopwords):
               n : an integer specifying that the frequency distribution includes
                   ony the top n most frequent terms (if n is None all vocabulary
                   terms are included)"""
-    fds = (fdist(directory, api, n, stopwords) for directory in directories)
+    fds = [fdist(directory, api, n, stopwords) for directory in directories]
     writer = csv.writer(sys.stdout, delimiter='\t')
     header = chain(
         *((f'{d}:lemma', f'{d}:pos', f'{d}:frequency') for d in directories)
@@ -179,9 +213,11 @@ if __name__ == '__main__':
         choices=sorted(COMPARISONS),
         default='all',
         help=(
-            'select whether to compare all vocabulary terms (all) or count '
-            'only the frequencies of terms that occur at least once in each '
-            'directory (intersection)'
+            'all: include the union of all terms across all corpora; '
+            'intersection: include only those terms that occur in all corpora; ',
+            'disjunction: include only those terms that occur in some of the '
+            'corpora, but not in all of the corpora; ',
+            'unique: include only those terms that are unique to each corpus'
         )
     )
     parser.add_argument(
