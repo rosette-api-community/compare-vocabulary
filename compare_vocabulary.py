@@ -214,9 +214,9 @@ if __name__ == '__main__':
         default='all',
         help=(
             'all: include the union of all terms across all corpora; '
-            'intersection: include only those terms that occur in all corpora; ',
+            'intersection: include only those terms that occur in all corpora; '
             'disjunction: include only those terms that occur in some of the '
-            'corpora, but not in all of the corpora; ',
+            'corpora, but not in all of the corpora; '
             'unique: include only those terms that are unique to each corpus'
         )
     )
